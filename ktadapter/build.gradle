@@ -1,14 +1,17 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+    id "com.android.library"
+    id "kotlin-android"
+    id "com.jfrog.bintray" version "1.8.4"
+    id "maven-publish"
+}
 
 android {
     compileSdkVersion 28
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 14
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionName "0.3"
     }
 
     buildTypes {
@@ -20,10 +23,68 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 }
 
-// from: https://github.com/bugsnag/bugsnag-android/blob/master/sdk/build.gradle
-// Tasks to release the library to maven central
-//apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+project.afterEvaluate {
+    publishing {
+        publications {
+            aar(MavenPublication) {
+                groupId "com.diamondedge"
+                artifactId "ktadapter"
+                version = android.defaultConfig.versionName
+
+                artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+                artifact androidSourcesJar
+//                artifact androidJavadocsJar
+
+                pom.withXml {
+                    def dependencies = asNode().appendNode('dependencies')
+                    configurations.api.allDependencies.each {
+                        def dependency = dependencies.appendNode('dependency')
+                        dependency.appendNode('groupId', it.group)
+                        dependency.appendNode('artifactId', it.name)
+                        dependency.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = bintray_user
+    key = bintray_key
+    publications = ['aar']
+
+    pkg {
+        repo = 'android'
+        name = 'KtAdapter'
+        userOrg = 'diamondedge'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/ellsworthrw/KtAdapter'
+        version {
+            name = android.defaultConfig.versionName
+            desc = "KtAdapter ${android.defaultConfig.versionName}"
+            vcsTag = "v${android.defaultConfig.versionName}"
+            released = new Date()
+        }
+    }
+    override = true
+    publish = true
+}
+
+task androidSourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+//task androidJavadocs(type: Javadoc) {
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//}
+//
+//task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+//    from androidJavadocs.destinationDir
+//    classifier = 'javadoc'
+//}
