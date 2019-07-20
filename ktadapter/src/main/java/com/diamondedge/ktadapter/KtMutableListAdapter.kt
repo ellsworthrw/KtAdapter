@@ -44,11 +44,13 @@ open class KtMutableListAdapter<T : Any>(protected val values: MutableList<T>) :
         return values.indexOf(item)
     }
 
-    fun setItems(items: List<T>) {
-        values.clear()
-        values.addAll(items)
-        notifyDataSetChanged()
-    }
+    var items: List<T>
+        get() = values.toList()
+        set(list) {
+            values.clear()
+            values.addAll(list)
+            notifyDataSetChanged()
+        }
 
     override fun getItemViewType(position: Int): Int {
         return STRING_TYPE
