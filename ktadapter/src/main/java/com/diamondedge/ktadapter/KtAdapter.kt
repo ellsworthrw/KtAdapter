@@ -1,7 +1,8 @@
 package com.diamondedge.ktadapter
 
-import android.util.Log
-import android.view.*
+import android.view.KeyEvent
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 typealias ClickListener<T> = (v: View, vh: KtAdapter.ViewHolder<T>, adapter: KtAdapter<T>) -> Unit
@@ -44,7 +45,6 @@ abstract class KtAdapter<T : Any> : RecyclerView.Adapter<KtAdapter.ViewHolder<T>
 
     override fun onBindViewHolder(holder: ViewHolder<T>, position: Int) {
         val item = get(position)
-        Log.i("KtAdapter", "onBindViewHolder item($position) $item count: $itemCount")
         holder.bind(position, item)
         bindViewHolderListener?.invoke(holder, position, item)
     }
@@ -59,10 +59,10 @@ abstract class KtAdapter<T : Any> : RecyclerView.Adapter<KtAdapter.ViewHolder<T>
     }
 
     open class ViewHolder<T : Any>(itemView: View, val adapter: KtAdapter<T>) : RecyclerView.ViewHolder(itemView),
-            View.OnClickListener,
-            View.OnLongClickListener,
-            View.OnFocusChangeListener,
-            View.OnKeyListener {
+        View.OnClickListener,
+        View.OnLongClickListener,
+        View.OnFocusChangeListener,
+        View.OnKeyListener {
 
         open fun bind(position: Int, item: T) {}
         open fun unbind() {}
@@ -83,5 +83,10 @@ abstract class KtAdapter<T : Any> : RecyclerView.Adapter<KtAdapter.ViewHolder<T>
         override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
             return adapter.keyListener?.invoke(keyCode, event, v, this, adapter) ?: false
         }
+    }
+
+    companion object {
+        const val STRING_TYPE = 1
+        const val ITEM_TYPE = 2
     }
 }

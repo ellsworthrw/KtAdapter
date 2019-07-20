@@ -12,7 +12,7 @@ object ItemList {
     /**
      * An array of sample (dummy) items.
      */
-    val ITEMS: MutableList<Item> = ArrayList()
+    val ITEMS: MutableList<Any> = ArrayList()
 
     /**
      * A map of sample (dummy) items, by ID.
