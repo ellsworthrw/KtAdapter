@@ -57,6 +57,6 @@ open class KtMutableListAdapter<T : Any>(protected val values: MutableList<T>) :
     }
 
     override fun createVH(parent: ViewGroup, viewType: Int, adapter: KtAdapter<T>): ViewHolder<T> {
-        return StringVH(parent, adapter)
+        return TextVH(parent, adapter)
     }
 }

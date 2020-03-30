@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 
-class StringVH<T : Any>(val parent: View, adapter: KtAdapter<T>) :
+class TextVH<T : Any>(val parent: View, adapter: KtAdapter<T>) :
     KtAdapter.ViewHolder<T>(LinearLayout(parent.context), adapter) {
 
     private val textView: TextView = TextView(parent.context)
@@ -29,7 +29,10 @@ class StringVH<T : Any>(val parent: View, adapter: KtAdapter<T>) :
     }
 
     override fun bind(position: Int, item: T) {
-        textView.text = item.toString()
+        if (item is CharSequence)
+            textView.text = item
+        else
+            textView.text = item.toString()
     }
 }
 

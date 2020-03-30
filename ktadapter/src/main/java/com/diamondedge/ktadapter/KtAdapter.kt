@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-typealias ClickListener<T> = (v: View, vh: KtAdapter.ViewHolder<T>, adapter: KtAdapter<T>) -> Unit
+typealias ClickListener<T> = (item: T, v: View, vh: KtAdapter.ViewHolder<T>, adapter: KtAdapter<T>) -> Unit
 
-typealias LongClickListener<T> = (v: View, vh: KtAdapter.ViewHolder<T>, adapter: KtAdapter<T>) -> Boolean
+typealias LongClickListener<T> = (item: T, v: View, vh: KtAdapter.ViewHolder<T>, adapter: KtAdapter<T>) -> Boolean
 
 typealias FocusListener<T> = (hasFocus: Boolean, v: View, vh: KtAdapter.ViewHolder<T>, adapter: KtAdapter<T>) -> Boolean
 
@@ -68,11 +68,12 @@ abstract class KtAdapter<T : Any> : RecyclerView.Adapter<KtAdapter.ViewHolder<T>
         open fun unbind() {}
 
         override fun onClick(v: View) {
-            adapter.clickListener?.invoke(v, this, adapter)
+            adapter.clickListener?.invoke(adapter[adapterPosition], v, this, adapter)
         }
 
         override fun onLongClick(v: View): Boolean {
-            return adapter.longClickListener?.invoke(v, this, adapter) ?: false
+            return adapter.longClickListener?.invoke(adapter[adapterPosition], v, this, adapter)
+                ?: false
         }
 
         override fun onFocusChange(v: View, hasFocus: Boolean) {

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.diamondedge.ktadapter.KtAdapter
 import com.diamondedge.ktadapter.KtListAdapter
-import com.diamondedge.ktadapter.StringVH
+import com.diamondedge.ktadapter.TextVH
 import kotlinx.android.synthetic.main.item_list_content.view.*
 import timber.log.Timber
 
@@ -21,26 +21,27 @@ class ItemAdapter(
 
     init {
         Timber.tag("ItemAdapter").i("ItemAdapter($twoPane) $values")
-        clickListener = { v, vh, adapter ->
-            val item = adapter[vh.adapterPosition] as ItemList.Item
-            if (twoPane) {
-                val fragment = ItemDetailFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ItemDetailFragment.ARG_ITEM_ID, item.id)
+        clickListener = { item, v, vh, adapter ->
+            if (item is ItemList.Item) {
+                if (twoPane) {
+                    val fragment = ItemDetailFragment().apply {
+                        arguments = Bundle().apply {
+                            putString(ItemDetailFragment.ARG_ITEM_ID, item.id)
+                        }
                     }
+                    activity.supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.item_detail_container, fragment)
+                        .commit()
+                } else {
+                    val intent = Intent(
+                        v.context,
+                        ItemDetailActivity::class.java
+                    ).apply {
+                        putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id)
+                    }
+                    v.context.startActivity(intent)
                 }
-                activity.supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.item_detail_container, fragment)
-                    .commit()
-            } else {
-                val intent = Intent(
-                    v.context,
-                    ItemDetailActivity::class.java
-                ).apply {
-                    putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id)
-                }
-                v.context.startActivity(intent)
             }
         }
     }
@@ -51,7 +52,7 @@ class ItemAdapter(
 
     override fun createVH(parent: ViewGroup, viewType: Int, adapter: KtAdapter<Any>): ViewHolder<Any> {
         return when (viewType) {
-            STRING_TYPE -> StringVH(parent, adapter)
+            STRING_TYPE -> TextVH(parent, adapter)
             else -> ItemViewHolder.create(parent, adapter)
         }
     }

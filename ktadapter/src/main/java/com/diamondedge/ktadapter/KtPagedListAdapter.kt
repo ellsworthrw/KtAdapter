@@ -21,7 +21,7 @@ open class KtPagedListAdapter<T : Any>(private val cls: Class<T>, diffCallback: 
     override fun getItemCount(): Int = mDiffer.itemCount
 
     override fun createVH(parent: ViewGroup, viewType: Int, adapter: KtAdapter<T>): ViewHolder<T> {
-        return StringVH(parent, adapter)
+        return TextVH(parent, adapter)
     }
 
     /**
