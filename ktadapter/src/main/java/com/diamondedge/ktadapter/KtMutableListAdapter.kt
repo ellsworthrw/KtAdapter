@@ -42,7 +42,7 @@ open class KtMutableListAdapter<T : Any>(protected val values: MutableList<T>) :
     }
 
     fun removeRange(positionStart: Int, count: Int) {
-        for (i in positionStart downTo positionStart - count) {
+        for (i in positionStart + count - 1 downTo positionStart) {
             values.removeAt(i)
         }
         notifyItemRangeRemoved(positionStart, count)
