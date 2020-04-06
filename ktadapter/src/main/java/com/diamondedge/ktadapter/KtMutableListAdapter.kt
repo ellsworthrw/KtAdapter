@@ -23,10 +23,29 @@ open class KtMutableListAdapter<T : Any>(protected val values: MutableList<T>) :
         notifyItemInserted(i)
     }
 
+    fun addAll(list: List<T>) {
+        addAll(values.size, list)
+    }
+
+    fun addAll(index: Int, list: List<T>) {
+        var i = index
+        if (i < 0)
+            i = 0
+        values.addAll(i, list)
+        notifyItemRangeInserted(i, list.size)
+    }
+
     fun remove(index: Int): T {
         val item = values.removeAt(index)
         notifyItemRemoved(index)
         return item
+    }
+
+    fun removeRange(positionStart: Int, count: Int) {
+        for (i in positionStart downTo positionStart - count) {
+            values.removeAt(i)
+        }
+        notifyItemRangeRemoved(positionStart, count)
     }
 
     fun set(index: Int, item: T): T {
