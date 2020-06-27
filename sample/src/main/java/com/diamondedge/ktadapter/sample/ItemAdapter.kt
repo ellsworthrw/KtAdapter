@@ -21,7 +21,7 @@ class ItemAdapter(
 
     init {
         Timber.tag("ItemAdapter").i("ItemAdapter($twoPane) $values")
-        clickListener = { item, v, vh, adapter ->
+        clickListener = { item, v, _, _ ->
             if (item is ItemList.Item) {
                 if (twoPane) {
                     val fragment = ItemDetailFragment().apply {

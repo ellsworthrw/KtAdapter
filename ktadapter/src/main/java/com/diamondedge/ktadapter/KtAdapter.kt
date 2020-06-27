@@ -58,6 +58,14 @@ abstract class KtAdapter<T : Any> : RecyclerView.Adapter<KtAdapter.ViewHolder<T>
         onUnbindViewHolder(holder)
     }
 
+    override fun onViewAttachedToWindow(holder: ViewHolder<T>) {
+        holder.onAttachedToWindow()
+    }
+
+    override fun onViewDetachedFromWindow(holder: ViewHolder<T>) {
+        holder.onDetachedFromWindow()
+    }
+
     open class ViewHolder<T : Any>(itemView: View, val adapter: KtAdapter<T>) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener,
         View.OnLongClickListener,
@@ -66,6 +74,9 @@ abstract class KtAdapter<T : Any> : RecyclerView.Adapter<KtAdapter.ViewHolder<T>
 
         open fun bind(position: Int, item: T) {}
         open fun unbind() {}
+
+        open fun onAttachedToWindow() {}
+        open fun onDetachedFromWindow() {}
 
         override fun onClick(v: View) {
             adapter.clickListener?.invoke(adapter[adapterPosition], v, this, adapter)
